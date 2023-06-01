@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <title>Daily UI | #001 - Sign Up</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="style.css">
+</head>
+<body class="align">
+    <div class="container">
+        <div class="screen">
+            <div class="screen__content">
+                <form class="login" onsubmit="save(event)" >
+                
+                        <label for="">Username</label>
+                        <input  type="text"  id="name">
+                        <label for="">Email</label>
+                        <input type="text"  name="product" id="email">
+                        <label for="">Password</label>
+                        <input type="text" placeholder="Item" name="product" id="password">
+                        <button type="submit">Sign up</button>
+                
+                    <button class="button login__submit">
+                        <span class="button__text">Log In Now</span>
+                        <i class="button__icon fas fa-chevron-right"></i>
+                    </button>				
+                </form>
+                
+            </div>
+            <div class="screen__background">
+                <span class="screen__background__shape screen__background__shape4"></span>
+                <span class="screen__background__shape screen__background__shape3"></span>		
+                <span class="screen__background__shape screen__background__shape2"></span>
+                <span class="screen__background__shape screen__background__shape1"></span>
+            </div>		
+        </div>
+    </div>
+
+</body>
+ <script src="index.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</html>
