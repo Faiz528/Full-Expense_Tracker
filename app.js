@@ -10,8 +10,10 @@ const cors = require('cors')
 app.use(cors())
 app.use(Parser.json({extended:false}))
 
-const Expense = require('./route/expense')
-app.use(Expense)
+const Signup = require('./sign up/route/sign')
+app.use(Signup)
+const Login = require('./login/route/log')
+app.use(Login)
 
 sequelize.
 sync().then(result=>{
