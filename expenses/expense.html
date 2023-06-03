@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <h1>The Expense Tracker</h1> 
+    <form class="form-inline" id="extra" >
+        <div class="form-group">
+          <label for="inputdefault">Expense-Amount
+          <input type="number" class="form-control" id="inputdefault-e" name="expense">
+        </div>
+        <div class="form-group">
+          <label for="inputdefault">Purpose</label>
+          <input type="text" class="form-control" id="inputdefault-p" name="purpose">
+        </div>
+        <div class="form-group">
+          <label for="category"  >Category</label>
+          <select class="form-control" id="category" name="category">
+            <option value="Fuel">Fuel</option>
+            <option value="Food">Food</option>
+            <option value="Education">Education</option>
+            <option value="Rent">Rent</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-default" id="Add">Add Expense</button>
+       
+      </form>
+      <button  class="btn btn-default" id="update">Update</button>
+      
+      <ul id="userList">
+
+            
+      </ul>
+</body>
+<script async src="expense.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    
+</script>
+</html>
