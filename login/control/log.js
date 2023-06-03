@@ -9,12 +9,12 @@ exports.VerifyUser= async(req,res,next)=>{
     console.log(user);
 
     if (!user) {
-      return res.json(null); // User not found, return null
+      return res.status(404).json("User not found"); // User not found, return null
     } else {
       if (user.Password !== pass) {
-        return res.json("Password does not match");
+        return res.status(401).json("User not authorised");
       } else {
-        return res.json(user);
+        return res.status(200).json(user);
       }
     }
   }
