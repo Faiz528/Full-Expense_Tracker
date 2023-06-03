@@ -13,15 +13,10 @@ async function save(event)
         const response = await axios.post('http://localhost:3000/login', object);
         console.log(response.data);
     
-        if (response.data === null) {
-          alert("User not found");
-        } else if (response.data === "Password does not match") {
-          alert("Password does not match");
-        } else {
-          alert("Logged In Successfully");
-        }
+      
+        alert("Login Succesfully")
       }
     catch(err){
-       
+      alert( err.response.data);
     }
 }
