@@ -1,4 +1,5 @@
 var name=document.getElementById('name')
+//var error = document.getElementById('error')
 async function save(event)
 {
     event.preventDefault()
@@ -8,13 +9,17 @@ async function save(event)
         email,
         pass
     }
+    if(!email || !pass){
+      error.innerHTML="Fields cannot be empty"
+      return;
+      }
     //console.log(object)
     try {
         const response = await axios.post('http://localhost:3000/login', object);
-        console.log(response.data);
+        console.log(response);
     
-      
-        alert("Login Succesfully")
+      alert(response.data.message)
+       window.location.href='../../expenses/expense.html'
       }
     catch(err){
       alert( err.response.data);
