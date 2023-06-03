@@ -17,6 +17,13 @@ body {
 	justify-content: center;
 	min-height: 100vh;
 }
+#update{
+	
+		position: absolute;
+		left: 860px;
+		top: 72px;
+	}
+
 
 .screen {		
 	background: linear-gradient(90deg, #5D54A4, #7C78B8);		
