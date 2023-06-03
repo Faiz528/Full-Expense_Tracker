@@ -1,23 +1,18 @@
 const User = require('../../model/user')
+const bcrypt = require('bcrypt')
 exports.PostUser=(req,res,next)=>{
- var name = req.body.name
-  /*const find =(Expense.findOne({where:{ Username :name}}))
-  if(find)
-  {
-    res.status(404).send("User Already Exist")
-  }
-  else{*/
-
-  User.create({
-    Username : name,
-    Email : req.body.email,
-    Password : req.body.pass
-  }).then(user=>{
-    res.json(user)
-    
-  }).catch(err=>{
-    res.json(err)
-    console.log(err)
+  try{
+ const{name , email, pass}= req.body
+  bcrypt.hash(pass,10 , async(err,hash)=>{
+    await  User.create({
+      Username : name,
+      Email : email,
+      Password : hash
+    })
   })
+
   }
-//
+  catch(err){
+    console.log(err)
+  }
+}
