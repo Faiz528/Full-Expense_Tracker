@@ -1,16 +1,18 @@
 const Expense = require("../../model/expense")
-//const User = require('../models/user')
-exports.PostExpense= (req,res,next)=>{
+const jwt = require('jsonwebtoken')
+const User = require('../../model/user')
 
-    const amounts = req.body.expense
-    const purposes = req.body.purpose
-    const categorys = req.body.category
+exports.PostExpense= (req,res,next)=>{
      
+    const{expense , purpose , category , id} = req.body
+    
+     console.log(id)
     
     Expense.create({
-        Expenses : amounts,
-        Purpose : purposes,
-        Category : categorys
+        Expenses : expense,
+        Purpose : purpose,
+        Category : category,
+        userId   : id
     })
     .then(result=>{
         console.log(result)
@@ -21,7 +23,11 @@ exports.PostExpense= (req,res,next)=>{
 }
 
 exports.GetExpense= (req,res,next)=>{
-    Expense.findAll().then(result=>{
+    const token = req.header('Authorisation')
+    console.log(token)
+    const userid = jwt.verify(token,'secret').id
+    console.log(userid)
+    Expense.findAll({where :{userId:userid}}).then(result=>{
         res.json(result)
     }).catch(err=>{
         console.log(err)
@@ -70,11 +76,3 @@ exports.UpdateExpense= (req,res,next)=>{
    
 }
 
-exports.GetUser=(req,res,next)=>{
-     User.findByPk(1).then(user=>{
-        console.log(user)
-        res.json(user)
-     }).catch(err=>{
-        console.log(err)
-     })
-}
