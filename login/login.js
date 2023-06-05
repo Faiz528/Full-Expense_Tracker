@@ -17,11 +17,17 @@ async function save(event)
     try {
         const response = await axios.post('http://localhost:3000/login', object);
         console.log(response);
-    
+        const ids = response.data.userid
+        const tokens = response.data.token
+         console.log(ids)
+         console.log(tokens)
+         localStorage.setItem('id', ids);
+         localStorage.setItem('token', tokens);
       alert(response.data.message)
        window.location.href='../../expenses/expense.html'
       }
     catch(err){
-      alert( err.response.data);
+      console.log(err)
+     // alert( err.response.data);
     }
 }
