@@ -3,11 +3,16 @@ let myform=document.getElementById("extra")
     const purpose1 = document.getElementById('inputdefault-p')
     const category1 = document.getElementById('category')
     const update = document.getElementById('update')
-
+    //const urlParams = new URLSearchParams(window.location.search);
+  
+    const id = localStorage.getItem('id');
+    
 
 myform.addEventListener('submit',save)
 async function save(event){
     event.preventDefault();
+
+    console.log(id)
   var expense=event.target.expense.value
   var purpose=event.target.purpose.value
   var category=event.target.category.value
@@ -15,7 +20,8 @@ async function save(event){
    let my ={
         expense,
         purpose,
-        category
+        category,
+        id
     }
     console.log(my)
 try{
@@ -26,7 +32,7 @@ try{
     console.log(response)
     expense1.value=""
     purpose1.value=''
-
+  
 }
 catch(err){
     console.log(err)
@@ -36,7 +42,9 @@ catch(err){
 
 window.document.addEventListener("DOMContentLoaded",async ()=>{
     try{
- const response =  await axios.get("http://localhost:3000/add");
+      const tokens = localStorage.getItem('token')
+      console.log(tokens)
+ const response =  await axios.get("http://localhost:3000/add",{headers:{'Authorisation':tokens}});
  console.log(response)
   for(var i =0;i<response.data.length ; i++)
         onscreen(response.data[i])
@@ -125,72 +133,3 @@ async function edit(userId)
  
 }
   
-async function edits1(userId){
-  try{
-  console.log(userId)
-
-  //const result = await axios.post(`http://localhost:3000/edits/${userId}`)
-    // console.log(result)
-
- }
-
-catch(err){
-console.log(err)
-}
-}
-
-
-
-async function edits(object,userId)
-{
-  console.log("Working")
- /* event.preventDefault()
-  var names=event.target.expense.value
-  var mail=event.target.purpose.value
-  var mobile=event.target.category.value
-  console.log(names)
-
-var object={
-  names,
-  mail,
-  mobile
-}
-
-try{
-const response1= await axios.put(`http://localhost:3000/edit/${userId}`,object)
-}
-catch(err){
-  console.log(err)
-}*/
-} 
- /*   var newli =document.createElement('li');
-     var text1 = document.createTextNode(expense+"-"+purpose+"-"+id);
-    newli.appendChild(text1);
-   var ul = document.querySelector('ul');
-   ul.appendChild(newli);
-   const deletes = document.createElement('input');
-   deletes.type='button';
-   deletes.value="Delete Expense";
-   newli.appendChild(deletes);
-   
-   //var but = document.createElement('button');
-   //var del = document.createTextNode('Delete');
-   //but.appendChild(del);
-   //ul.appendChild(but);
-   deletes.onclick= ()=> {
-       localStorage.removeItem(expense);
-       ul.removeChild(newli);
-   }
-
-   // Creating edit button
-   const edit = document.createElement('input');
-   edit.type='button';
-   edit.value="Edit Expense";
-   newli.appendChild(edit);
-   edit.onclick= ()=> {
-        event.target.expense.value= expense;
-        event.target.purpose.value= purpose;
-       localStorage.removeItem(expense);
-       ul.removeChild(newli);
-   }
-}*/
