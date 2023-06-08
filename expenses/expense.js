@@ -3,8 +3,9 @@ let myform=document.getElementById("extra")
     const purpose1 = document.getElementById('inputdefault-p')
     const category1 = document.getElementById('category')
     const update = document.getElementById('update')
+    const razorpayBtn = document.getElementById('buy')
     //const urlParams = new URLSearchParams(window.location.search);
-  
+    const tokens = localStorage.getItem('token')
     const id = localStorage.getItem('id');
     
 
@@ -26,7 +27,7 @@ async function save(event){
     console.log(my)
 try{
   
-  const response =await axios.post(`http://localhost:3000/add`,my)
+  const response =await axios.post(`http://localhost:3000/add`,{headers:{'Authorisation':tokens}},my)
 
     onscreen(response.data)
     console.log(response)
@@ -39,16 +40,63 @@ catch(err){
 }
 }
 
+razorpayBtn.addEventListener("click", async(e) =>{ 
+  try{ 
+      //if(e.target.classList.contains('membership')){ 
+          const response = await axios.get('http://localhost:3000/premium', { headers: {"Authorisation" : tokens }}) 
+          // console.log(response.data.order.id) 
+          var options = { 
+              "key": response.data.key_id, 
+              "order_id": response.data.order.id, 
+              "handler": async function (response){ 
+                  const a =await axios.post("http://localhost:3000/updatetransactionstatus",{ 
+                      order_id: options.order_id, 
+                      payment_id: response.razorpay_payment_id 
+                  }, { headers: {"Authorisation" : tokens }}) 
+                  localStorage.setItem('success',true)
+                  alert('You are a premium User') 
+                  razorpayBtn.style.display = "none" 
+                  document.getElementById('message').innerText='Premium User'
+                 // message.innerText='sedrtyguijok'
+
+              } 
+          } 
+      //}
+  } catch (err) { 
+      console.log(err) 
+  }; 
+  const rzp1 = new Razorpay(options); 
+  rzp1.open(); 
+  e.preventDefault(); 
+
+  rzp1.on('payment.failed', async function (response){ 
+      console.log(response); 
+      alert("Transaction Failed") 
+      await axios.post("http://localhost:4000/purchase/transactionfailstatus", response.error.metadata ,{ headers: {"Authorisation" : tokens }}) 
+
+  }); 
+})
+
+
+
+
+
 
 window.document.addEventListener("DOMContentLoaded",async ()=>{
     try{
       const tokens = localStorage.getItem('token')
       console.log(tokens)
  const response =  await axios.get("http://localhost:3000/add",{headers:{'Authorisation':tokens}});
- console.log(response)
+ console.table(response)
   for(var i =0;i<response.data.length ; i++)
         onscreen(response.data[i])
-
+        const a =localStorage.getItem('success')
+        console.log(a)
+        if (a == 'true') {
+          razorpayBtn.style.display = 'none'; // Hide the premium button
+          //document.body.appendChild(message); // Add the success message to the document
+          document.getElementById('message').innerText='Premium User'
+        }
     }
     catch(error){
         console.log(error)
