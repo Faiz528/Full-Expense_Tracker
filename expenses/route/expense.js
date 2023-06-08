@@ -1,12 +1,13 @@
 const express = require('express')
-
+const authenticates = require('../../middleware/auth.js')
 const route = express.Router()
 
 const Control = require('../controlller/expense')
-
+const Premium = require('../controlller/purchase')
 route.post('/add',Control.PostExpense)
 
-route.get('/user', Control.GetUser)
+route.get('/premium',authenticates.authenticate, Premium.Premium)
+route.post('/updatetransactionstatus',authenticates.authenticate, Premium.updateTransaction)
 
 route.post('/edits/:id',Control.UpdateExpense)
 
