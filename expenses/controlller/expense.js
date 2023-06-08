@@ -5,14 +5,15 @@ const User = require('../../model/user')
 exports.PostExpense= (req,res,next)=>{
      
     const{expense , purpose , category , id} = req.body
-    
+    const token = req.header('Authorisation')
+    const userid = jwt.verify(token,'secret').id
      console.log(id)
     
     Expense.create({
         Expenses : expense,
         Purpose : purpose,
         Category : category,
-        userId   : id
+        userId   : userid
     })
     .then(result=>{
         console.log(result)
