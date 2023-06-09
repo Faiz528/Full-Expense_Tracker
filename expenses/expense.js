@@ -4,16 +4,16 @@ let myform=document.getElementById("extra")
     const category1 = document.getElementById('category')
     const update = document.getElementById('update')
     const razorpayBtn = document.getElementById('buy')
-    //const urlParams = new URLSearchParams(window.location.search);
-    const tokens = localStorage.getItem('token')
-    const id = localStorage.getItem('id');
     
-
+    const tokens = localStorage.getItem('token')
+    const leader = document.getElementById('leader')
+    const leaderlist = document.getElementById('leaders')
+//let total=0
 myform.addEventListener('submit',save)
 async function save(event){
     event.preventDefault();
 
-    console.log(id)
+    
   var expense=event.target.expense.value
   var purpose=event.target.purpose.value
   var category=event.target.category.value
@@ -21,24 +21,47 @@ async function save(event){
    let my ={
         expense,
         purpose,
-        category,
-        id
+        category
+        
     }
     console.log(my)
 try{
   
-  const response =await axios.post(`http://localhost:3000/add`,{headers:{'Authorisation':tokens}},my)
-
+  const response =await axios.post(`http://localhost:3000/add`,my,{headers:{'Authorisation':tokens}})
+      
     onscreen(response.data)
-    console.log(response)
+   // console.log(total)
+    //total = total + parseInt(response.data.Expenses)
+ // console.log(total)
+    //const sum =  axios.get(`http://localhost:3000/totals/${total}`,{headers:{'Authorisation':tokens,'Total':total}})
+  
     expense1.value=""
     purpose1.value=''
-  
+    
 }
+
 catch(err){
     console.log(err)
 }
+window.location.reload()
 }
+leader.addEventListener("click",async(e)=>{
+  try{
+    console.log("Working")
+    const leaderboard =await axios.get('http://localhost:3000/leaderlist')
+    console.log(leaderboard)
+    for(var i =0; i<leaderboard.data.length;i++)
+      {
+        const user = leaderboard.data[i].Username
+        const total = leaderboard.data[i].Total
+        const child =`<li>${user}-${total} </li>`
+        leaderlist.innerHTML+= child
+      }
+  }
+  catch(err){
+    console.log(err)
+  }
+})
 
 razorpayBtn.addEventListener("click", async(e) =>{ 
   try{ 
@@ -53,10 +76,11 @@ razorpayBtn.addEventListener("click", async(e) =>{
                       order_id: options.order_id, 
                       payment_id: response.razorpay_payment_id 
                   }, { headers: {"Authorisation" : tokens }}) 
-                  localStorage.setItem('success',true)
+                  localStorage.setItem('prime',true)
                   alert('You are a premium User') 
-                  razorpayBtn.style.display = "none" 
-                  document.getElementById('message').innerText='Premium User'
+                 // razorpayBtn.style.display = "none" 
+                 // document.getElementById('message').innerText='Premium User'
+                  window.location.reload()
                  // message.innerText='sedrtyguijok'
 
               } 
@@ -85,18 +109,36 @@ razorpayBtn.addEventListener("click", async(e) =>{
 window.document.addEventListener("DOMContentLoaded",async ()=>{
     try{
       const tokens = localStorage.getItem('token')
+      const prime = localStorage.getItem('prime')
       console.log(tokens)
  const response =  await axios.get("http://localhost:3000/add",{headers:{'Authorisation':tokens}});
- console.table(response)
-  for(var i =0;i<response.data.length ; i++)
+ //const premium = await axios.get("http://localhost:3000/premiumuser")
+ console.log(response)
+ var total=0;
+  for(var i =0;i<response.data.length ; i++){
         onscreen(response.data[i])
-        const a =localStorage.getItem('success')
-        console.log(a)
-        if (a == 'true') {
+        total= total +  parseInt(response.data[i].Expenses)
+  } 
+  const sum =  axios.get(`http://localhost:3000/totals/${total}`,{headers:{'Authorisation':tokens,'Total':total}})
+  console.log(sum)
+  console.log(total)
+        if (prime == 'true') {
           razorpayBtn.style.display = 'none'; // Hide the premium button
-          //document.body.appendChild(message); // Add the success message to the document
+          //leader.style.display='contents'
           document.getElementById('message').innerText='Premium User'
+          const leaderboard =await axios.get('http://localhost:3000/leaderlist')
+          console.log(leaderboard)
+          for(var i =0; i<leaderboard.data.length;i++)
+            {
+              const user = leaderboard.data[i].Username
+              const total = leaderboard.data[i].Total
+              const child =`<li>${user}-${total} </li>`
+              leaderlist.innerHTML+= child
+            }
         }
+        
+        else
+        leader.style.display='none'
     }
     catch(error){
         console.log(error)
