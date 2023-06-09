@@ -4,13 +4,13 @@ const User = require('../../model/user')
 
 exports.PostExpense= (req,res,next)=>{
      
-    const{expense , purpose , category , id} = req.body
+    const{expense , purpose , category } = req.body
     const token = req.header('Authorisation')
     const userid = jwt.verify(token,'secret').id
-     console.log(id)
+     console.log(userid)
     
     Expense.create({
-        Expenses : expense,
+        Expenses :expense,
         Purpose : purpose,
         Category : category,
         userId   : userid
@@ -29,6 +29,15 @@ exports.GetExpense= (req,res,next)=>{
     const userid = jwt.verify(token,'secret').id
     console.log(userid)
     Expense.findAll({where :{userId:userid}}).then(result=>{
+        res.json(result)
+    }).catch(err=>{
+        console.log(err)
+    })
+}
+exports.Getleader= (req,res,next)=>{
+    
+    User.findAll({order: [['Total', 'DESC']]}).then(result=>{
+        console.log(result)
         res.json(result)
     }).catch(err=>{
         console.log(err)
@@ -75,5 +84,15 @@ exports.UpdateExpense= (req,res,next)=>{
         console.log(err)
     })
    
+}
+exports.Gettotal=async(req,res,next)=>{
+    const total = req.params.sum
+    try{
+   const a= await req.user.update({Total:total})
+    res.json(a)
+    }   
+    catch(err){
+        console.log(err)
+    }                                                                                                     
 }
 
