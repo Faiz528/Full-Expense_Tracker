@@ -8,6 +8,32 @@ const razorpayBtn = document.getElementById('buy')
 const tokens = localStorage.getItem('token')
 const leader = document.getElementById('leader')
 const leaderlist = document.getElementById('leaders')
+const dailybtn = document.getElementById('daily')
+const weeklybtn = document.getElementById('weekly')
+const monthlybtn = document.getElementById('monthly')
+// Daily expenses button or link
+
+
+
+dailybtn.addEventListener('click', () => {
+  listExpensesByTimeframe('daily');
+});
+
+// Weekly expenses button or link
+
+weeklybtn.addEventListener('click', () => {
+  listExpensesByTimeframe('weekly');
+});
+
+// Monthly expenses button or link
+
+monthlybtn.addEventListener('click', () => {
+  listExpensesByTimeframe('monthly');
+});
+
+// Initial call to list all expenses
+//listExpensesByTimeframe('all');
+
 
 myform.addEventListener('submit',save)
 async function save(event){
@@ -28,15 +54,19 @@ async function save(event){
         onscreen(response.data)
         expense1.value=""
         purpose1.value=''
+        window.location.reload()
     }
     catch(err){
         console.log(err)
     }
-    window.location.reload()
+    
 }
 
 leader.addEventListener("click",async(e)=>{
+  const h2 = document.getElementById('topper');
+      h2.innerText = 'LEADERBOAD';
     try{
+      
         const leaderboard = await axios.get('http://localhost:3000/leaderlist')
         for(var i =0; i<leaderboard.data.length;i++){
             const user = leaderboard.data[i].Username
@@ -86,6 +116,7 @@ window.document.addEventListener("DOMContentLoaded",async () =>{
         const tokens = localStorage.getItem('token')
         const prime = localStorage.getItem('prime')
         const response = await axios.get("http://localhost:3000/add",{headers:{'Authorisation':tokens}});
+        console.log(response)
         var total=0;
         for(var i =0;i<response.data.length ; i++){
             onscreen(response.data[i])
@@ -94,20 +125,13 @@ window.document.addEventListener("DOMContentLoaded",async () =>{
         const sum =  axios.get(`http://localhost:3000/totals/${total}`,{headers:{'Authorisation':tokens,'Total':total}})
         if (prime == 'true') {
             razorpayBtn.style.display = 'none';
-            document.getElementById('message').innerText='Premium User'
-            const h2 = document.createElement('h2');
-            h2.innerText = 'LEADERBOAD';
-            document.body.appendChild(h2);
-            const leaderboard =await axios.get('http://localhost:3000/leaderlist')
-            for(var i =0; i<leaderboard.data.length;i++){
-                const user = leaderboard.data[i].Username
-                const total = leaderboard.data[i].Total
-                const child =`<li>${user}-${total} </li>`
-                leaderlist.innerHTML+= child
-            }
+            document.getElementById('message').innerText='PREMIUM'
         }
         else{
             leader.style.display='none'
+            dailybtn.style.display='none'
+            weeklybtn.style.display='none'
+            monthlybtn.style.display='none'
         }
     }
     catch(error){
@@ -116,11 +140,15 @@ window.document.addEventListener("DOMContentLoaded",async () =>{
 })
 
 async function onscreen(user){
+      
     try{
+        const expenseDate = new Date(user.createdAt);
+        console.log(expenseDate)
+         const formattedDate = expenseDate.toDateString();
         const childHTML = `
             <li id=${ user.id}>
-                Amount: ${user.Expenses}<br>
-                Purpose: ${ user.Purpose}<br>
+            Date: ${formattedDate}  Amount: ${user.Expenses}  
+                Purpose: ${ user.Purpose}
                 Category :${ user.Category}
                 <button onclick="remove('${ user.id}')">DELETE</button></form>
                 <button onclick="edit('${ user.id}')">EDIT</button>
@@ -166,3 +194,42 @@ async function edit(userId){
         console.log(err)
     }
 }
+
+async function listExpensesByTimeframe(timeframe) {
+    try {
+      const tokens = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:3000/add', { headers: { 'Authorisation': tokens } });
+  
+      // Clear the expense list
+      userList.innerHTML = '';
+  
+      // Get the current date
+      const currentDate = new Date();
+      console.log(currentDate)
+  
+      // Filter expenses based on the selected timeframe
+      const filteredExpenses = response.data.filter(user => {
+        const expenseDate = new Date(user.createdAt);
+  
+        if (timeframe === 'daily') {
+          return expenseDate.toDateString() === currentDate.toDateString();
+        } else if (timeframe === 'weekly') {
+          const weekStartDate = currentDate.getDate() - currentDate.getDay();
+          const weekEndDate = weekStartDate + 6;
+          return expenseDate >= new Date(currentDate.getFullYear(), currentDate.getMonth(), weekStartDate) &&
+            expenseDate <= new Date(currentDate.getFullYear(), currentDate.getMonth(), weekEndDate);
+        } else if (timeframe === 'monthly') {
+          return expenseDate.getMonth() === currentDate.getMonth() && expenseDate.getFullYear() === currentDate.getFullYear();
+        }
+  
+        return true; // Return all expenses for 'all' timeframe
+      });
+  
+      // Display the filtered expenses
+      filteredExpenses.forEach(user => {
+        onscreen(user);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
