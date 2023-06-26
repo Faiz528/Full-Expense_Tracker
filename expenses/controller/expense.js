@@ -114,8 +114,8 @@ catch(err){
 function uploadToS3(data,filename)
 {
   const BUCKET_NAME='expensestracker1'
-  const IAM_USER_KEY ='AKIA344RLU5CUDYOIU5G'
-  const IAM_USER_SECRET='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'
+  const IAM_USER_KEY =
+  const IAM_USER_SECRET=
 
   let s3bucket = new AWS.S3({
     accessKeyId : IAM_USER_KEY,
