@@ -1,0 +1,34 @@
+var name=document.getElementById('name')
+//var error = document.getElementById('error')
+async function save(event)
+{
+    event.preventDefault()
+    var email = event.target.email.value
+    var pass = event.target.password.value
+    var object={
+        email,
+        pass
+    }
+    if(!email || !pass){
+      error.innerHTML="Fields cannot be empty"
+      return;
+      }
+    //console.log(object)
+    try {
+        const response = await axios.post('http://localhost:3000/login', object);
+        console.log(response);
+        const tokens = response.data.token
+        const premium = response.data.premium
+         
+         console.log(tokens)
+        
+         localStorage.setItem('token', tokens);
+         localStorage.setItem('prime',premium)
+      alert(response.data.message)
+       window.location.href='../layout/expense.html'
+      }
+    catch(err){
+      console.log(err)
+      alert( err.response.data);
+    }
+}
