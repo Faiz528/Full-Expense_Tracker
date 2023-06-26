@@ -151,7 +151,7 @@ razorpayBtn.addEventListener("click", async(e) =>{
 window.document.addEventListener("DOMContentLoaded", async () => {
   try {
     let page = 1;
-    const limit = 3;
+    let limit = 5;
     let totalItems = 0;
 
     const fetchExpenses = async () => {
@@ -195,6 +195,12 @@ window.document.addEventListener("DOMContentLoaded", async () => {
         fetchExpenses();
       }
     };
+     rows.addEventListener("change", () => {
+      console.log(rows.value)
+      limit = parseInt(rows.value);
+      page = 1; // Reset the page to 1 when changing the limit
+      fetchExpenses(); // Fetch the expenses based on the new limit
+    });
 
    // const nextButton = document.getElementById("nextButton");
     nextButton.addEventListener("click", nextPage);
@@ -250,54 +256,6 @@ const itemsPerPage =5
 
 })*/
 
-
-function showPagination(response){ 
-  pagination.innerHTML = ''; 
-  const { currentPage, hasNextPage, nextPage, hasPreviousPage, previousPage, lastPage } = 
-  response.data.pageData; 
-
-  if(hasPreviousPage){ 
-      const btn2 = document.createElement('button'); 
-      // btn2.add.className = 'page-link' 
-      btn2.innerHTML = previousPage; 
-      btn2.addEventListener('click', ()=> getPage(previousPage)); 
-      pagination.appendChild(btn2); 
-  } 
-      const btn1 = document.createElement('button'); 
-      // btn1.add.className = 'page-link' 
-      btn1.innerHTML = `<h5>${currentPage}</h5>`; 
-      btn1.addEventListener('click', ()=> getPage(currentPage)); 
-      pagination.appendChild(btn1); 
-
-  if(hasNextPage){ 
-      const btn3 = document.createElement('button'); 
-      // btn3.add.className = 'page-link' 
-      btn3.innerHTML = nextPage; 
-      btn3.addEventListener('click', ()=> getPage(nextPage)); 
-      pagination.appendChild(btn3); 
-  } 
-  //pageInfo.textContent = `Page${currentPage} of ${lastPage}` 
-} 
-
-async function getPage(page){ 
-  try { 
-    const response = await axios.get(`http://localhost:3000/user/expense/page/${page}`, { 
-      headers: { 
-        "Authorisation": tokens, 
-        "itemsPerPage" : itemsPerPage 
-      } 
-    }); 
-    //removeFromScreen() 
-  //   console.log(response); 
-    response.data.expenses.forEach((user) => { 
-      onscreen(user); 
-    }); 
-    showPagination(response); 
-  } catch (err) { 
-    console.error(err); 
-  } 
-  
-}
 
 async function onscreen(user){
       
