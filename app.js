@@ -1,4 +1,6 @@
 require('dotenv').config();
+const fs = require('fs')
+const path = require('path')
 const express = require('express')
 const app = express()
 const Parser = require('body-parser')
@@ -8,6 +10,16 @@ const cors = require('cors')
 const User = require('./model/user')
 const Expenses = require('./model/expense')
 const Order = require('./model/order')
+const helmet = require('helmet')
+const compressions = require('compression')
+const morgan = require('morgan')
+
+const accessLog = fs.createWriteStream(
+  path.join(__dirname,'access.log'),{flags:'a'}
+)
+app.use(helmet())
+app.use(compressions())
+app.use(morgan('combined',{stream:accessLog}))
 
 app.use(cors())
 app.use(Parser.json({extended:false}))
